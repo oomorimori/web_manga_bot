@@ -1,9 +1,8 @@
-from slackbot.bot import Bot
+from slack_webhook import Slack
+import requests,bs4
 
-def main():
-    bot = Bot()
-    bot.run()
 
-if __name__ == "__main__":
-    print('start slackbot')
-    main()
+# urlには先の認証でもらったIncoming Webhook URLを指定
+webhook_url = 'https://hooks.slack.com/services/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'
+slack = Slack(url=webhook_url)
+slack.post(text="Hello, world.")
