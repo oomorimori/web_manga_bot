@@ -1,4 +1,5 @@
 from slack_webhook import Slack
+from secret.webhook_url import *
 import requests,bs4,csv
 
 # スクレイピングしてスープテキストを取り出す
@@ -28,7 +29,7 @@ def input_csv():
 
 # Slackへの通知がうまくいかなかった場合、エラーを返してログは取らないようにする
 def send_to_slack(message):
-    webhook_url = 'https://hooks.slack.com/services/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'
+    webhook_url = WEBHOOK_URL # 公開するな！
     slack = Slack(url=webhook_url)
     slack.post(text=message)
 
