@@ -3,51 +3,45 @@ from send_slack import send_to_slack
 from control_csv import input_csv, output_csv
 import requests,bs4,csv
 
-MANGA_LIST = [
-    ['http://www.goldfishkingdom.client.jp/'],
-]
+url = 'http://www.goldfishkingdom.client.jp/'
 csv_path = '../log/log_kingyo.csv'
 
-def scraping(url):
+def scraping(url=url):
     res = requests.get(url)
     # html.parserはHTMLのタグ情報から情報を解釈してくれる
     soup = bs4.BeautifulSoup(res.content, "html.parser")
-    soup_text = [n.get_text() for n in soup.select(html_tag)] # .getText()を付けることで、HTMLのタグを取り除くことができる
-    return soup_text
+    gallaries = [n.img['src'] for n in soup.select('.gallery > li')] # .getText()を付けることで、HTMLのタグを取り除くことができる
+    chapter = soup.select_one('#chapter')
+    chapters = [n.img['alt'] for n in chapter.find_all('li')]
+    # print(chapters)
+    return chapters[-1], gallaries
 
-def log_creation():
-    output_array = [] # この配列の中身を最終的にログとしてCSVファイルに書き込む
-    for i, data in enumerate(MANGA_LIST):
-        # [0]：URL [1]：HTML_TAG
-        current_data = scraping(data[0], data[1])
-        print(current_data)
-        # 最新の更新情報をアペンド
-        output_array.append(current_data)
-
-    # ログをCSVに書き込む
+def log_creation(gallaries):
+    output_array = []
+    output_array.append(gallaries)
     output_csv(csv_path, output_array)
 
 
 def main():
-    output_array = [] # この配列の中身を最終的にログとしてCSVファイルに書き込む
-    past_data_list = input_csv(csv_path)
-    if not past_data_list:
-        print('csvファイルは空です')
-        log_creation()
-        past_data_list = input_csv(csv_path)
+    latest_chapter, latest_gallaries = scraping()
 
-    for i, data in enumerate(MANGA_LIST):
-        current_data = scraping(data)
-        output_array.append(current_data)
-        past_data = past_data_list[i]
-        if past_data != current_data:
-            # 差分のリストを取得、複数の更新があった場合複数のメッセージを作成する
-            diff_list = list(set(current_data) - set(past_data)) # set型・・・集合を扱う
-            # print(diff_list)
-            for n in diff_list:
-                send_to_slack(n.strip("¥n"))
-        else:
-            print("The Article has not updated ...")
+    output_array = [] # この配列の中身を最終的にログとしてCSVファイルに書き込む
+    past_gallaries = input_csv(csv_path)[0]
+    if not past_gallaries: # 初期化
+        print('csvファイルは空です')
+        log_creation(latest_gallaries)
+
+    output_array.append(latest_gallaries)
+    if past_gallaries != latest_gallaries:
+        # 差分のリストを取得、複数の更新があった場合複数のメッセージを作成する
+        print(set(past_gallaries))
+        diff_list = list(set(latest_gallaries) - set(past_gallaries)) # set型・・・集合を扱う
+        # print(diff_list)
+        for n in diff_list:
+            # message =
+            send_to_slack(n.strip("¥n"))
+    else:
+        print("The Article has not updated ...")
 
     # ログをCSVに書き込む
     output_csv(csv_path, output_array)
