@@ -12,7 +12,7 @@ url_list = [
     # OnePanchMan
     'https://tonarinoyj.jp/rss/series/13932016480028984490',
     ]
-csv_path = '../log/log_rss.csv'
+csv_path = './log/log_rss.csv'
 
 def scraping(url):
     print("url = "+url)
@@ -20,7 +20,7 @@ def scraping(url):
     print(d.channel.title)
     latest_entry = d.entries[0]
 
-    return d.channel.title, d.channel.link, latest_entry.title, latest_entry.updated, latest_entry.link
+    return [d.channel.title, d.channel.link, latest_entry.title, latest_entry.updated, latest_entry.link]
 
 
 def log_creation(url_list=url_list):
@@ -41,16 +41,13 @@ def main():
         log_creation()
         past_data_list = input_csv(csv_path)
 
-    for i, data in enumerate(url_list):
-        current_data = scraping(data)
+    for i, url in enumerate(url_list):
+        current_data = scraping(url)
         output_array.append(current_data)
         past_data = past_data_list[i]
         if past_data != current_data:
-            # 差分のリストを取得、複数の更新があった場合複数のメッセージを作成する
-            diff_list = list(set(current_data) - set(past_data)) # set型・・・集合を扱う
-            # print(diff_list)
-            for n in diff_list:
-                send_to_slack(n.strip("¥n"))
+            print(current_data)
+            send_to_slack(current_data[0], current_data[1], current_data[2])
         else:
             print("The Article has not updated ...")
 

@@ -4,23 +4,21 @@ from control_csv import input_csv, output_csv
 import requests,bs4,csv
 
 MANGA_LIST = [
-    # はてなぶろぐ※テスト用
-    ['https://sakanamori.hatenablog.com/','.recent-entries-item-inner'],
+    # # はてなぶろぐ※テスト用
+    # ['https://sakanamori.hatenablog.com/','.recent-entries-item-inner'],
     # -------------------- comicwalker --------------------
     # 見える子ちゃん
-    ['https://comic-walker.com/contents/detail/KDCW_MF00000090010000_68/','.acBacknumber-item-leftbox'],
+    ['https://comic-walker.com/contents/detail/KDCW_MF00000090010000_68/','.acBacknumber-item-leftbox','見える子ちゃん'],
     # わたモテ
-    ['https://www.ganganonline.com/contents/watashiga/','.gn_detail_story_list_ttl'],
-    # さいはてのどうくつ
-    ['https://l-v-l.com/','.imagebox'],
+    ['https://www.ganganonline.com/contents/watashiga/','.gn_detail_story_list_ttl','私がモテないのはどう考えてもお前らが悪い!'],
 ]
-csv_path = '../log/log_soup.csv'
+csv_path = './log/log_soup.csv'
 
 def scraping(url, html_tag):
     res = requests.get(url)
     # html.parserはHTMLのタグ情報から情報を解釈してくれる
     soup = bs4.BeautifulSoup(res.content, "html.parser")
-    soup_text = [n.get_text() for n in soup.select(html_tag)] # .getText()を付けることで、HTMLのタグを取り除くことができる
+    soup_text = [n.get_text().strip("\n") for n in soup.select(html_tag)] # .getText()を付けることで、HTMLのタグを取り除くことができる
     return soup_text
 
 def log_creation():
@@ -54,7 +52,7 @@ def main():
             diff_list = list(set(current_data) - set(past_data)) # set型・・・集合を扱う
             # print(diff_list)
             for n in diff_list:
-                send_to_slack(n.strip("¥n"))
+                send_to_slack(data[2], data[0], n.strip("\n"))
         else:
             print("The Article has not updated ...")
 

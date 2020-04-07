@@ -3,9 +3,9 @@ from send_slack import send_to_slack
 from control_csv import input_csv, output_csv
 import requests,bs4,csv
 
-title = '金魚王国の崩壊'
-url = 'http://www.goldfishkingdom.client.jp/'
-csv_path = './log/log_kingyo.csv'
+title = 'ワンパンマン'
+url = 'http://galaxyheavyblow.web.fc2.com/'
+csv_path = '../log/log_onepan.csv'
 
 def scraping(url=url):
     res = requests.get(url)
