@@ -5,9 +5,10 @@ import requests,bs4,csv
 
 title = 'さいはてのどうくつ'
 url = 'https://l-v-l.com/'
-csv_path = './log/log_saihate.csv'
+csv_path = '/Users/omori/workspace/web_manga_bot/log/log_saihate.csv'
 
 def scraping(url=url):
+    print(title)
     res = requests.get(url)
     # html.parserはHTMLのタグ情報から情報を解釈してくれる
     soup = bs4.BeautifulSoup(res.content, "html.parser")
@@ -33,7 +34,7 @@ def main():
 
     output_array.append(latest)
 
-    if past != latest:
+    if past[0] != latest:
         # 差分のリストを取得、複数の更新があった場合複数のメッセージを作成する
         diff_list = list(set(latest) - set(past[0])) # set型・・・集合を扱う
         # print(diff_list)

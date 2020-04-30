@@ -5,9 +5,10 @@ import requests,bs4,csv
 
 title = 'ワンパンマン'
 url = 'http://galaxyheavyblow.web.fc2.com/'
-csv_path = '../log/log_onepan.csv'
+csv_path = '/Users/omori/workspace/web_manga_bot/log/log_onepan.csv'
 
 def scraping(url=url):
+    print(title)
     res = requests.get(url)
     # html.parserはHTMLのタグ情報から情報を解釈してくれる
     soup = bs4.BeautifulSoup(res.content, "html.parser")

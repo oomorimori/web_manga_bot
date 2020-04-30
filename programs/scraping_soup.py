@@ -12,9 +12,10 @@ MANGA_LIST = [
     # わたモテ
     ['https://www.ganganonline.com/contents/watashiga/','.gn_detail_story_list_ttl','私がモテないのはどう考えてもお前らが悪い!'],
 ]
-csv_path = './log/log_soup.csv'
+csv_path = '/Users/omori/workspace/web_manga_bot/log/log_soup.csv'
 
-def scraping(url, html_tag):
+def scraping(url, html_tag, title):
+    print(title)
     res = requests.get(url)
     # html.parserはHTMLのタグ情報から情報を解釈してくれる
     soup = bs4.BeautifulSoup(res.content, "html.parser")
@@ -25,7 +26,7 @@ def log_creation():
     output_array = [] # この配列の中身を最終的にログとしてCSVファイルに書き込む
     for i, data in enumerate(MANGA_LIST):
         # [0]：URL [1]：HTML_TAG
-        current_data = scraping(data[0], data[1])
+        current_data = scraping(data[0], data[1], data[2])
         print(current_data)
         # 最新の更新情報をアペンド
         output_array.append(current_data)
@@ -44,7 +45,7 @@ def main():
         past_data_list = input_csv(csv_path)
 
     for i, data in enumerate(MANGA_LIST):
-        current_data = scraping(data[0], data[1])
+        current_data = scraping(data[0], data[1], data[2])
         output_array.append(current_data)
         past_data = past_data_list[i]
         if past_data != current_data:

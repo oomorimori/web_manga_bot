@@ -5,9 +5,10 @@ import requests,bs4,csv
 
 title = '金魚王国の崩壊'
 url = 'http://www.goldfishkingdom.client.jp/'
-csv_path = './log/log_kingyo.csv'
+csv_path = '/Users/omori/workspace/web_manga_bot/log/log_kingyo.csv'
 
 def scraping(url=url):
+    print(title)
     res = requests.get(url)
     # html.parserはHTMLのタグ情報から情報を解釈してくれる
     soup = bs4.BeautifulSoup(res.content, "html.parser")
@@ -25,9 +26,8 @@ def log_creation(gallaries):
 
 def main():
     latest_chapter, latest_gallaries = scraping()
-
     output_array = [] # この配列の中身を最終的にログとしてCSVファイルに書き込む
-    past_gallaries = input_csv(csv_path)
+    past_gallaries = input_csv(csv_path) # [[]]
     if not past_gallaries: # 初期化
         print('csvファイルは空です')
         log_creation(latest_gallaries)
@@ -35,7 +35,7 @@ def main():
 
     output_array.append(latest_gallaries)
 
-    if past_gallaries != latest_gallaries:
+    if past_gallaries[0] != latest_gallaries:
         # 差分のリストを取得、複数の更新があった場合複数のメッセージを作成する
         diff_list = list(set(latest_gallaries) - set(past_gallaries[0])) # set型・・・集合を扱う
         # print(diff_list)
