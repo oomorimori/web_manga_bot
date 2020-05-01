@@ -6,7 +6,10 @@ verify_ssl = true
 [dev-packages]
 
 [packages]
-
+beautifulsoup4 = "*"
+slack-webhook = "*"
+feedparser = "*"
+requests = "*"
 
 [requires]
 python_version = "3.7.3"
