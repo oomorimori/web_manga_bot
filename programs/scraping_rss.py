@@ -11,6 +11,8 @@ url_list = [
     'https://kuragebunch.com/rss/series/10834108156628842496',
     # OnePanchMan
     'https://tonarinoyj.jp/rss/series/13932016480028984490',
+    # バトゥーキ
+    'https://tonarinoyj.jp/rss/series/10834108156631752007',
     ]
 csv_path = '/Users/omori/workspace/web_manga_bot/log/log_rss.csv'
 
