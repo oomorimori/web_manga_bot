@@ -11,6 +11,16 @@ url_list = [
     'https://kuragebunch.com/rss/series/10834108156628842496',
     # OnePanchMan
     'https://tonarinoyj.jp/rss/series/13932016480028984490',
+    # バトゥーキ
+    'https://tonarinoyj.jp/rss/series/10834108156631752007',
+    # 推しの子
+    'https://tonarinoyj.jp/rss/series/13933686331626272801',
+    # スーサイドガール
+    'https://tonarinoyj.jp/rss/series/13933686331624804843',
+    # さばえとヤったらおわる
+    'https://kuragebunch.com/rss/series/10834108156689698365',
+    # 趣味のラブホテル
+    'https://kuragebunch.com/rss/series/10834108156681517332',
     ]
 csv_path = '/Users/omori/workspace/web_manga_bot/log/log_rss.csv'
 
@@ -33,10 +43,12 @@ def log_creation(url_list=url_list):
     output_csv(csv_path,log_array)
 
 
+
 def main():
     output_array = [] # この配列の中身を最終的にログとしてCSVファイルに書き込む
+    # ログを取得
     past_data_list = input_csv(csv_path)
-    if not past_data_list:
+    if len(past_data_list) != len(url_list):
         print('csvファイルは空です')
         log_creation()
         past_data_list = input_csv(csv_path)
