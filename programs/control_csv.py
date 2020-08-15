@@ -6,7 +6,9 @@ def output_csv(path, output_array):
     with open(path, 'w', newline='', encoding='utf_8') as file:
         writer = csv.writer(file)
         for i in output_array:
+            # 引数はリスト
             writer.writerow(i)
+            # writer.writerow([i])
 
 def input_csv(path):
     with open(path, 'r', encoding='utf_8', errors='', newline='') as file:

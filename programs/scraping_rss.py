@@ -24,7 +24,7 @@ url_list = [
     ]
 csv_path = '/Users/omori/workspace/web_manga_bot/log/log_rss.csv'
 
-def scraping(url):
+def get_with_rss(url):
     # print("url = "+url)
     d = feedparser.parse(url)
     print(d.channel.title)
@@ -36,7 +36,7 @@ def scraping(url):
 def log_creation(url_list=url_list):
     log_array = []
     for i, url in enumerate(url_list):
-        rss_meta_list = scraping(url)
+        rss_meta_list = get_with_rss(url)
         log_array.append(rss_meta_list)
 
     # print(log_array)
@@ -45,20 +45,22 @@ def log_creation(url_list=url_list):
 
 
 def main():
-    output_array = [] # この配列の中身を最終的にログとしてCSVファイルに書き込む
-    # ログを取得
+    # この配列の中身を最終的にログとしてCSVファイルに書き込む
+    output_array = []
+    # CSVからログを取得
     past_data_list = input_csv(csv_path)
+
+    # ログに記録していない作品があった場合、ログファイルを初期化
     if len(past_data_list) != len(url_list):
-        print('csvファイルは空です')
+        print('csvファイルを初期化します')
         log_creation()
         past_data_list = input_csv(csv_path)
-
+    # 各作品のRSSフィードを取得し、更新があれば通知
     for i, url in enumerate(url_list):
-        current_data = scraping(url)
+        current_data = get_with_rss(url)
         output_array.append(current_data)
         past_data = past_data_list[i]
         if past_data != current_data:
-            # print(current_data)
             send_to_slack(current_data[0], current_data[1], current_data[2])
         else:
             print("The Article has not updated ...")

@@ -14,8 +14,7 @@ MANGA_LIST = [
 ]
 csv_path = '/Users/omori/workspace/web_manga_bot/log/log_soup.csv'
 
-def scraping(url, html_tag, title):
-    print(title)
+def scraping_with_bsoup(url, html_tag, title):
     res = requests.get(url)
     # html.parserはHTMLのタグ情報から情報を解釈してくれる
     soup = bs4.BeautifulSoup(res.content, "html.parser")
@@ -23,42 +22,43 @@ def scraping(url, html_tag, title):
     return soup_text
 
 def log_creation():
-    output_array = [] # この配列の中身を最終的にログとしてCSVファイルに書き込む
+    log_array = [] # この配列の中身を最終的にログとしてCSVファイルに書き込む
     for i, data in enumerate(MANGA_LIST):
         # [0]：URL [1]：HTML_TAG
-        current_data = scraping(data[0], data[1], data[2])
+        current_data = scraping_with_bsoup(data[0], data[1], data[2])
         print(current_data)
         # 最新の更新情報をアペンド
-        output_array.append(current_data)
+        log_array.append(current_data)
 
     # ログをCSVに書き込む
-    output_csv(csv_path, output_array)
+    output_csv(csv_path, log_array)
 
 
 def main():
-
-    output_array = [] # この配列の中身を最終的にログとしてCSVファイルに書き込む
+    # この配列の中身を最終的にログとしてCSVファイルに書き込む
+    log_array = []
     past_data_list = input_csv(csv_path)
+
+    # ログがなければ初期化
     if not past_data_list:
-        print('csvファイルは空です')
+        print('csvファイルを初期化します')
         log_creation()
         past_data_list = input_csv(csv_path)
 
     for i, data in enumerate(MANGA_LIST):
-        current_data = scraping(data[0], data[1], data[2])
-        output_array.append(current_data)
+        current_data = scraping_with_bsoup(data[0], data[1], data[2])
+        log_array.append(current_data)
         past_data = past_data_list[i]
         if past_data != current_data:
             # 差分のリストを取得、複数の更新があった場合複数のメッセージを作成する
             diff_list = list(set(current_data) - set(past_data)) # set型・・・集合を扱う
-            # print(diff_list)
             for n in diff_list:
                 send_to_slack(data[2], data[0], n.strip("\n"))
         else:
             print("The Article has not updated ...")
 
     # ログをCSVに書き込む
-    output_csv(csv_path, output_array)
+    output_csv(csv_path, log_array)
 
 if __name__ == '__main__':
     main()
